@@ -22,7 +22,7 @@ Most timers just run `shutdown /s /t 3600` and hope for the best. Dusk is built 
 - **The warning never steals your keyboard.** One minute before the end, a heads-up appears on top: snooze 10 minutes, cancel, or do it now. It never grabs focus, so keys you type in a game or another app can't trigger it by accident.
 - **No surprise after sleep.** If the PC was asleep when the time came, Dusk cancels and tells you instead of shutting down the moment you wake it.
 - **It actually fires.** While counting down, the PC is kept from idling into sleep. The screen can still turn off.
-- **No admin rights. A single instance. A 250 KB exe.**
+- **No admin rights. A single instance. A 350 KB exe.**
 
 ## Features
 
