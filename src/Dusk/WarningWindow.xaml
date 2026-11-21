@@ -33,9 +33,9 @@
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button x:Name="SnoozeButton" Grid.Column="0" Content="10 dk ertele" HorizontalAlignment="Stretch"
+            <Button x:Name="SnoozeButton" Grid.Column="0" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" IsDefault="True" Click="Snooze_Click" />
-            <Button Grid.Column="2" Content="İptal et" HorizontalAlignment="Stretch" IsCancel="True" Click="Cancel_Click" />
+            <Button x:Name="CancelButton" Grid.Column="2" HorizontalAlignment="Stretch" IsCancel="True" Click="Cancel_Click" />
         </Grid>
         <Button x:Name="NowButton" Margin="0,8,0,0" Height="34" HorizontalAlignment="Stretch"
                 Background="Transparent" BorderThickness="0"

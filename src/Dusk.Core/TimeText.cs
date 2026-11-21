@@ -4,15 +4,21 @@ namespace Dusk.Core;
 
 public static class TimeText
 {
-    private static readonly CultureInfo Tr = CultureInfo.GetCultureInfo("tr-TR");
+    private static readonly CultureInfo TrCulture = CultureInfo.GetCultureInfo("tr-TR");
 
-    /// <summary>A chosen duration in words: "45 dk", "1 sa", "2 sa 15 dk".</summary>
+    /// <summary>English times follow the user's regional format (11:45 PM or 23:45).</summary>
+    public static CultureInfo EnCulture { get; set; } = CultureInfo.CurrentCulture;
+
+    private static bool Tr => Loc.Current == Lang.Tr;
+
+    /// <summary>A chosen duration in words: "45 dk" / "45 min", "2 sa 15 dk" / "2 h 15 min".</summary>
     public static string Duration(int minutes)
     {
-        if (minutes <= 0) return "0 dk";
-        int h = minutes / 60, m = minutes % 60;
-        if (h == 0) return $"{m} dk";
-        return m == 0 ? $"{h} sa" : $"{h} sa {m} dk";
+        string h = Tr ? "sa" : "h", m = Tr ? "dk" : "min";
+        if (minutes <= 0) return $"0 {m}";
+        int hh = minutes / 60, mm = minutes % 60;
+        if (hh == 0) return $"{mm} {m}";
+        return mm == 0 ? $"{hh} {h}" : $"{hh} {h} {mm} {m}";
     }
 
     /// <summary>A live countdown: "4:59", "1:04:59".</summary>
@@ -24,19 +30,32 @@ public static class TimeText
         return h > 0 ? $"{h}:{m:00}:{sec:00}" : $"{m}:{sec:00}";
     }
 
-    /// <summary>Wall-clock time of day: "23:45".</summary>
-    public static string TimeOfDay(DateTime local) => local.ToString("HH:mm", Tr);
+    /// <summary>Wall-clock time of day: "23:45" / "11:45 PM".</summary>
+    public static string TimeOfDay(DateTime local) =>
+        Tr ? local.ToString("HH:mm", TrCulture) : local.ToString("t", EnCulture);
 
-    /// <summary>"23:45'te", "yarın 07:30'da", with the correct Turkish suffix.</summary>
+    /// <summary>
+    /// "23:45'te", "yarın 07:30'da" / "at 11:45 PM", "tomorrow at 7:30 AM".
+    /// </summary>
     public static string At(DateTime targetLocal, DateTime nowLocal)
     {
-        var day = (targetLocal.Date - nowLocal.Date).Days switch
+        int days = (targetLocal.Date - nowLocal.Date).Days;
+        if (Tr)
         {
-            0 => "",
-            1 => "yarın ",
-            _ => targetLocal.ToString("d MMMM ", Tr),
+            var day = days switch
+            {
+                0 => "",
+                1 => "yarın ",
+                _ => targetLocal.ToString("d MMMM ", TrCulture),
+            };
+            return $"{day}{TimeOfDay(targetLocal)}'{LocativeSuffix(targetLocal)}";
+        }
+        return days switch
+        {
+            0 => $"at {TimeOfDay(targetLocal)}",
+            1 => $"tomorrow at {TimeOfDay(targetLocal)}",
+            _ => $"on {targetLocal.ToString("MMM d", EnCulture)} at {TimeOfDay(targetLocal)}",
         };
-        return $"{day}{TimeOfDay(targetLocal)}'{LocativeSuffix(targetLocal)}";
     }
 
     /// <summary>Suffix as the time is read aloud: 23:45 "kırk beşte", 07:30 "otuzda".</summary>

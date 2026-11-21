@@ -22,6 +22,10 @@ Halkayı sürükleyip süreyi seç, düğmeye bas. Süre dolduğunda bilgisayar 
 - **Geri sayım sürerken bilgisayar kendiliğinden uykuya geçmez,** böylece zamanlayıcı gerçekten çalışır. Ekran yine kapanabilir.
 - **Yönetici izni istemez,** tek bir kopyası çalışır.
 
+## Dil
+
+Windows'un görüntüleme dili Türkçeyse arayüz Türkçe, değilse İngilizce açılır. Olay günlüğü her iki durumda da İngilizce tutulur.
+
 ## Deneme kipi
 
 ```
@@ -32,7 +36,7 @@ Bu kipte (ya da `DUSK_DENEME=1` ortam değişkeniyle) hiçbir şey kapanmaz. Sü
 
 ## Günlük ve ayarlar
 
-- `%AppData%\Dusk\dusk.log`: Başlatma, uyarı, uzatma, iptal (kimin yaptığıyla birlikte), kaçırma ve sonuç olayları. "Dün gece neden kapanmadı?" sorusunun yanıtı buradadır.
+- `%AppData%\Dusk\dusk.log` (İngilizce): Başlatma, uyarı, uzatma, iptal (kimin yaptığıyla birlikte), kaçırma ve sonuç olayları. "Dün gece neden kapanmadı?" sorusunun yanıtı buradadır.
 - `%AppData%\Dusk\ayarlar.json`: Son seçilen işlem, süre ve görünüm.
 
 ## Derleme

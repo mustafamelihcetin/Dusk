@@ -2,8 +2,11 @@ using Dusk.Core;
 
 namespace Dusk.Tests;
 
+[Collection("Loc")]
 public class TimeTextTests
 {
+    public TimeTextTests() => Loc.Current = Lang.Tr;
+
     [Theory]
     [InlineData(45, "45 dk")]
     [InlineData(60, "1 sa")]

@@ -37,7 +37,7 @@ public sealed class TimerController
     {
         _countdown = new Countdown(action, TimeSpan.FromMinutes(minutes), DateTime.UtcNow);
         _force = force;
-        Log.Write($"Başladı: {action}, {minutes} dk, hedef {_countdown.TargetUtc.ToLocalTime():HH:mm:ss}, zorla={force}, deneme={PowerService.DryRun}");
+        Log.Write($"Started: {action}, {minutes} min, target {_countdown.TargetUtc.ToLocalTime():HH:mm:ss}, force={force}, trial={PowerService.DryRun}");
         KeepAwake.On();
         _timer.Start();
         OnTick();
@@ -47,7 +47,7 @@ public sealed class TimerController
     {
         if (_countdown is null) return;
         _countdown.Extend(TimeSpan.FromMinutes(minutes), DateTime.UtcNow);
-        Log.Write($"Uzatıldı: +{minutes} dk, yeni hedef {_countdown.TargetUtc.ToLocalTime():HH:mm:ss}");
+        Log.Write($"Extended: +{minutes} min, new target {_countdown.TargetUtc.ToLocalTime():HH:mm:ss}");
         Changed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -55,7 +55,7 @@ public sealed class TimerController
     public void Cancel(string source)
     {
         if (_countdown is null) return;
-        Log.Write($"İptal edildi ({source})");
+        Log.Write($"Cancelled ({source})");
         Stop(null);
     }
 
@@ -63,7 +63,7 @@ public sealed class TimerController
     public void RunNow()
     {
         if (_countdown is null) return;
-        Log.Write("Hemen yapılması istendi");
+        Log.Write("Asked to run now");
         Fire(_countdown.Action);
     }
 
@@ -73,7 +73,7 @@ public sealed class TimerController
         switch (_countdown.Evaluate(DateTime.UtcNow))
         {
             case CountdownStep.Warn:
-                Log.Write("Uyarı gösterildi");
+                Log.Write("Warning shown");
                 Changed?.Invoke(this, EventArgs.Empty);
                 Warning?.Invoke(this, EventArgs.Empty);
                 break;
@@ -82,8 +82,8 @@ public sealed class TimerController
                 break;
             case CountdownStep.Missed:
                 var at = TimeText.TimeOfDay(_countdown.TargetUtc.ToLocalTime());
-                Log.Write($"Kaçırıldı: hedef {at} geçmişti (uyku?), yapılmadı");
-                Stop($"Bilgisayar {at} sırasında uykudaydı. Sürpriz olmasın diye zamanlayıcı iptal edildi.");
+                Log.Write($"Missed: target {at} had passed (asleep?), not run");
+                Stop(Loc.Missed(at));
                 break;
             default:
                 Changed?.Invoke(this, EventArgs.Empty);
@@ -95,16 +95,16 @@ public sealed class TimerController
     {
         var force = _force;
         Stop(null);
-        Log.Write($"Süre doldu: {action} {(PowerService.DryRun ? "(deneme, yapılmadı)" : "yapılıyor")}");
+        Log.Write($"Time is up: {action} {(PowerService.DryRun ? "(trial, not run)" : "running")}");
         try
         {
             PowerService.Execute(action, force);
             if (PowerService.DryRun)
-                Ended?.Invoke(this, $"Deneme kipi: \"{PowerActionText.Label(action)}\" yapılmış sayıldı.");
+                Ended?.Invoke(this, Loc.DryRunDone(action));
         }
         catch (Exception e)
         {
-            Log.Write("Yapılamadı: " + e.Message);
+            Log.Write("Failed: " + e.Message);
             Failed?.Invoke(this, e.Message);
         }
     }

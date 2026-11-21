@@ -17,11 +17,11 @@ public partial class WarningWindow : Window
         InitializeComponent();
         _timer = timer;
         var action = timer.Current?.Action ?? PowerAction.Shutdown;
-        Headline.Text = $"Bilgisayar birazdan {PowerActionText.Future(action)}";
-        Detail.Text = action is PowerAction.Sleep
-            ? "Açık işleriniz olduğu gibi kalır."
-            : "Açık işlerinizi kaydetmek için iyi bir an.";
-        NowButton.Content = PowerActionText.Now(action);
+        Headline.Text = Loc.WarningHeadline(action);
+        Detail.Text = Loc.WarningDetail(action);
+        SnoozeButton.Content = Loc.Snooze10;
+        CancelButton.Content = Loc.CancelTimer;
+        NowButton.Content = Loc.Now(action);
 
         _timer.Changed += OnChanged;
         _timer.Ended += OnEnded;
@@ -46,6 +46,6 @@ public partial class WarningWindow : Window
     private void OnEnded(object? sender, string? reason) => Close();
 
     private void Snooze_Click(object sender, RoutedEventArgs e) => _timer.Extend(10);
-    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel("uyarı penceresi");
+    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel("warning window");
     private void Now_Click(object sender, RoutedEventArgs e) => _timer.RunNow();
 }

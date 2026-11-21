@@ -31,7 +31,7 @@ Most timers just run `shutdown /s /t 3600` and hope for the best. Dusk is built 
 - Tap the center to switch between a duration ("1 h 30 min") and a time of day ("23:45")
 - Quick picks: 15 min, 30 min, 1 h, 2 h
 - Keeps counting in the notification area when you close the window
-- Windows 11 Fluent design, follows your light/dark mode and accent color
+- English and Turkish, picked from your Windows display language
 - Screen-reader friendly: the dial is exposed as a slider
 - Event log at `%AppData%\Dusk\dusk.log`, so "why didn't it shut down last night?" always has an answer
 - Trial mode: `Dusk.exe --deneme` only logs what would happen
@@ -56,7 +56,7 @@ dotnet publish src/Dusk -c Release -r win-x64 --self-contained false -p:PublishS
 | `tests/Dusk.Tests` | Unit tests for the core |
 | `tools/make-icon.ps1` | Generates the app icon |
 
-The interface is in Turkish for now.
+The interface is in English and Turkish and follows your Windows display language.
 
 ## License
 

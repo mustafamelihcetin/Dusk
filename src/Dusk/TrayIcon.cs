@@ -20,17 +20,17 @@ public sealed class TrayIcon : IDisposable
         var stream = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/dusk.ico")).Stream;
         var menu = new Forms.ContextMenuStrip { ShowImageMargin = false };
         _status = new Forms.ToolStripMenuItem { Enabled = false };
-        _extend = new Forms.ToolStripMenuItem("10 dakika uzat", null, (_, _) => _timer.Extend(10));
-        _cancel = new Forms.ToolStripMenuItem("Zamanlayıcıyı iptal et", null, (_, _) => _timer.Cancel("tepsi menüsü"));
+        _extend = new Forms.ToolStripMenuItem(Loc.TrayExtend, null, (_, _) => _timer.Extend(10));
+        _cancel = new Forms.ToolStripMenuItem(Loc.TrayCancel, null, (_, _) => _timer.Cancel("tray menu"));
         menu.Items.AddRange(
         [
             _status,
             new Forms.ToolStripSeparator(),
-            new Forms.ToolStripMenuItem("Dusk'ı göster", null, (_, _) => ShowRequested?.Invoke(this, EventArgs.Empty)),
+            new Forms.ToolStripMenuItem(Loc.TrayShow, null, (_, _) => ShowRequested?.Invoke(this, EventArgs.Empty)),
             _extend,
             _cancel,
             new Forms.ToolStripSeparator(),
-            new Forms.ToolStripMenuItem("Çık", null, (_, _) => QuitRequested?.Invoke(this, EventArgs.Empty)),
+            new Forms.ToolStripMenuItem(Loc.TrayQuit, null, (_, _) => QuitRequested?.Invoke(this, EventArgs.Empty)),
         ]);
 
         _icon = new Forms.NotifyIcon
@@ -55,13 +55,13 @@ public sealed class TrayIcon : IDisposable
         string text;
         if (c is null)
         {
-            text = "Dusk · zamanlayıcı kapalı";
+            text = Loc.TrayIdle;
         }
         else
         {
             var at = TimeText.At(c.TargetUtc.ToLocalTime(), DateTime.Now);
             // Tooltips are limited to 127 characters; this stays well under.
-            text = $"Dusk · {TimeText.Clock(c.Remaining(DateTime.UtcNow))} kaldı\n{at} {PowerActionText.Future(c.Action)}";
+            text = $"Dusk · {Loc.Left(TimeText.Clock(c.Remaining(DateTime.UtcNow)))}\n{Loc.HappensAt(c.Action, at)}";
         }
         if (text == _lastText) return;
         _lastText = text;

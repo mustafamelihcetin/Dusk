@@ -12,8 +12,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>Dusk</AssemblyName>
     <Product>Dusk</Product>
-    <Description>Sade ve güvenli kapatma zamanlayıcısı</Description>
-    <Version>1.0.0</Version>
+    <Description>A calm, safe shutdown timer for Windows</Description>
+    <Version>1.1.0</Version>
     <!-- ThemeMode (Fluent) is still flagged experimental. -->
     <NoWarn>$(NoWarn);WPF0001</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

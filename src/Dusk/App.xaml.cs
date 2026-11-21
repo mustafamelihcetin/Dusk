@@ -54,18 +54,18 @@ public partial class App : Application
         _timer.Failed += (_, msg) =>
         {
             _main.BringToFront();
-            _tray.Balloon("Dusk yapamadı", msg);
+            _tray.Balloon(Loc.FailedTitle, msg);
         };
         _main.HiddenToTray += (_, _) =>
         {
             if (_toldAboutTray) return;
             _toldAboutTray = true;
-            _tray.Balloon("Dusk arka planda", "Zamanlayıcı çalışmaya devam ediyor. Simgeye tıklayarak geri açabilirsiniz.");
+            _tray.Balloon(Loc.BackgroundTitle, Loc.BackgroundText);
         };
         _main.Closed += (_, _) => Quit();
 
         if (PowerService.DryRun)
-            _main.ShowNotice("Deneme kipi: hiçbir şey kapanmayacak, yalnız günlüğe yazılacak.");
+            _main.ShowNotice(Loc.DryRunBanner);
         _main.Show();
     }
 
@@ -84,7 +84,7 @@ public partial class App : Application
             _main.CurrentSettings.Save(Settings.DefaultPath);
             _main.AllowClose = true;
         }
-        _timer?.Cancel("uygulamadan çıkış");
+        _timer?.Cancel("app quit");
         _tray?.Dispose();
         _tray = null;
         _main?.Close();

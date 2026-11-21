@@ -44,7 +44,7 @@ public static class PowerService
             case PowerAction.Sleep:
                 // hibernate=false, forceCritical=false (ignored on modern Windows), disableWake=false
                 if (!SetSuspendState(false, false, false))
-                    throw new InvalidOperationException("Windows uyku isteğini reddetti.");
+                    throw new InvalidOperationException(Loc.SleepRefused);
                 break;
         }
     }
@@ -56,10 +56,10 @@ public static class PowerService
         {
             CreateNoWindow = true,
             UseShellExecute = false,
-        }) ?? throw new InvalidOperationException("shutdown.exe başlatılamadı.");
+        }) ?? throw new InvalidOperationException(Loc.ShutdownExeMissing);
         p.WaitForExit(10_000);
         if (p.HasExited && p.ExitCode != 0)
-            throw new InvalidOperationException($"Windows isteği reddetti (kod {p.ExitCode}).");
+            throw new InvalidOperationException(Loc.Refused(p.ExitCode));
     }
 
     [DllImport("powrprof.dll", SetLastError = true)]

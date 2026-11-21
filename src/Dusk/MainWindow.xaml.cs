@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using Dusk.Core;
 
@@ -25,12 +26,13 @@ public partial class MainWindow : Window
         _settings = settings;
         _action = settings.Action;
         _showClock = settings.ShowClockTime;
+        ApplyTexts();
 
         foreach (var a in Enum.GetValues<PowerAction>())
         {
             // Columns share the width in proportion to their labels, so long
             // labels ("Yeniden başlat") get room without truncation.
-            var label = PowerActionText.Label(a);
+            var label = Loc.Label(a);
             ActionBar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(label.Length + 4, GridUnitType.Star) });
             var rb = new RadioButton
             {
@@ -53,9 +55,25 @@ public partial class MainWindow : Window
 
         _timer.Changed += (_, _) => Refresh();
         _timer.Ended += (_, reason) => ShowNotice(reason);
-        _timer.Failed += (_, msg) => ShowNotice("Yapılamadı: " + msg);
+        _timer.Failed += (_, msg) => ShowNotice(Loc.Failed(msg));
 
         Loaded += (_, _) => Refresh();
+    }
+
+    private void ApplyTexts()
+    {
+        Preset15.Content = TimeText.Duration(15);
+        Preset30.Content = TimeText.Duration(30);
+        Preset60.Content = TimeText.Duration(60);
+        Preset120.Content = TimeText.Duration(120);
+        ExtendButton.Content = Loc.Extend10;
+        ExtendButton.ToolTip = Loc.Extend10Tip;
+        CancelButton.Content = Loc.Cancel;
+        ForceBox.Content = Loc.Force;
+        ForceBox.ToolTip = Loc.ForceTip;
+        AutomationProperties.SetName(ActionBar, Loc.WhatToDo);
+        AutomationProperties.SetName(Dial, Loc.DialName);
+        AutomationProperties.SetHelpText(Dial, Loc.DialHelp);
     }
 
     public Settings CurrentSettings => _settings with
@@ -85,16 +103,15 @@ public partial class MainWindow : Window
             Dial.FractionLeft = running.FractionLeft(now);
             var left = TimeText.Clock(running.Remaining(now));
             var at = TimeText.At(running.TargetUtc.ToLocalTime(), nowLocal);
-            var verb = PowerActionText.Future(running.Action);
             if (_showClock)
             {
                 BigText.Text = TimeText.TimeOfDay(running.TargetUtc.ToLocalTime());
-                SubText.Text = $"{left} sonra {verb}";
+                SubText.Text = Loc.HappensIn(running.Action, left);
             }
             else
             {
                 BigText.Text = left;
-                SubText.Text = $"{at} {verb}";
+                SubText.Text = Loc.HappensAt(running.Action, at);
             }
             HintText.Text = "";
             Title = $"{left} · Dusk";
@@ -102,19 +119,19 @@ public partial class MainWindow : Window
         else
         {
             var target = nowLocal.AddMinutes(Dial.Minutes);
-            var verb = PowerActionText.Future(_action);
+            var duration = TimeText.Duration(Dial.Minutes);
             if (_showClock)
             {
                 BigText.Text = TimeText.TimeOfDay(target);
-                SubText.Text = $"{TimeText.Duration(Dial.Minutes)} sonra {verb}";
+                SubText.Text = Loc.HappensIn(_action, duration);
             }
             else
             {
-                BigText.Text = TimeText.Duration(Dial.Minutes);
-                SubText.Text = $"{TimeText.At(target, nowLocal)} {verb}";
+                BigText.Text = duration;
+                SubText.Text = Loc.HappensAt(_action, TimeText.At(target, nowLocal));
             }
-            HintText.Text = _showClock ? "süre için dokunun" : "saat için dokunun";
-            StartButton.Content = $"{PowerActionText.Label(_action)} · {TimeText.Duration(Dial.Minutes)} sonra";
+            HintText.Text = _showClock ? Loc.HintToDuration : Loc.HintToClock;
+            StartButton.Content = Loc.StartButton(_action, duration);
             Title = "Dusk";
         }
     }
@@ -133,7 +150,7 @@ public partial class MainWindow : Window
 
     private void Extend_Click(object sender, RoutedEventArgs e) => _timer.Extend(10);
 
-    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel("ana pencere");
+    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel("main window");
 
     public void ShowNotice(string? text)
     {
