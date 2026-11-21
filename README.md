@@ -1,52 +1,63 @@
-# Dusk
+<p align="center">
+  <img src="docs/screenshot.png" width="340" alt="Dusk main window: a round dial set to 30 minutes">
+</p>
 
-Windows için sade ve güvenli bir kapatma zamanlayıcısı.
+<h1 align="center">Dusk</h1>
 
-Halkayı sürükleyip süreyi seç, düğmeye bas. Süre dolduğunda bilgisayar kapanır, yeniden başlar, uykuya geçer ya da oturumu kapatır.
+<p align="center">
+  A calm, safe shutdown timer for Windows.<br>
+  Drag the dial, walk away.
+</p>
 
-## Kullanım
+<p align="center"><a href="README.tr.md">Türkçe</a></p>
 
-- **Süre seçmek:** Halkayı sürükle. Bir tur bir saat eder; turlar üst üste binerek 12 saate kadar çıkar. Fare tekerleği 5'er dakika, ok tuşları 1'er dakika, PageUp/PageDown 15'er dakika değiştirir. Hazır düğmeler: 15 dk, 30 dk, 1 sa, 2 sa.
-- **Saat mi, süre mi:** Kadranın ortasına tıkla. "1 sa 30 dk" ile "23:45" arasında geçer.
-- **Geri sayım sürerken:** "+10 dk" ile uzat, "İptal" ile vazgeç. Pencereyi kapatırsan Dusk saatin yanındaki simge alanına iner ve saymaya devam eder.
-- **Son dakika:** Ekranın ortasında bir uyarı çıkar: "10 dk ertele", "İptal et" ya da "Şimdi kapat".
+---
 
-## Güvenlik
+## Why another shutdown timer?
 
-- **Hiçbir şey önceden zamanlanmaz.** Windows'a "şu saatte kapan" emri verilmez; işlem ancak süre dolduğu anda yapılır. Dusk'ı kapatırsan ya da sonlandırırsan zamanlayıcı da iptal olur.
-- **Kaydedilmemiş işler korunur.** "Kaydedilmemiş işleri bekleme" kutusu işaretli değilse Windows, kaydedilmemiş belgesi olan uygulamalar için seni bekler. Bu kutu varsayılan olarak kapalıdır.
-- **Uyarı odak çalmaz.** Uyarı en üstte görünür ama klavyeyi ele geçirmez. Başka bir yerde yazarken bastığın tuşlar kazara erteleme ya da iptal yapmaz.
-- **Uykuda kaçan süre uygulanmaz.** Bilgisayar hedef saatte uykudaysa ve 2 dakikadan fazla gecikildiyse Dusk sürpriz yapmaz: zamanlayıcıyı iptal eder ve haber verir.
-- **Geri sayım sürerken bilgisayar kendiliğinden uykuya geçmez,** böylece zamanlayıcı gerçekten çalışır. Ekran yine kapanabilir.
-- **Yönetici izni istemez,** tek bir kopyası çalışır.
+Most timers just run `shutdown /s /t 3600` and hope for the best. Dusk is built around not surprising you:
 
-## Deneme kipi
+- **Nothing is pre-scheduled.** Windows is never told to shut down later. The action happens only when the countdown ends, so closing Dusk always cancels it.
+- **Your unsaved work is respected.** By default, Windows waits for apps that have unsaved documents. Forcing them closed is an opt-in checkbox.
+- **The warning never steals your keyboard.** One minute before the end, a heads-up appears on top: snooze 10 minutes, cancel, or do it now. It never grabs focus, so keys you type in a game or another app can't trigger it by accident.
+- **No surprise after sleep.** If the PC was asleep when the time came, Dusk cancels and tells you instead of shutting down the moment you wake it.
+- **It actually fires.** While counting down, the PC is kept from idling into sleep. The screen can still turn off.
+- **No admin rights. A single instance. A 250 KB exe.**
 
-```
-Dusk.exe --deneme
-```
+## Features
 
-Bu kipte (ya da `DUSK_DENEME=1` ortam değişkeniyle) hiçbir şey kapanmaz. Süre dolunca yalnız `%AppData%\Dusk\deneme.log` dosyasına bir satır yazılır.
+- Shut down, restart, sleep or sign out
+- Round dial: one lap is an hour, laps stack up to 12 hours. Also works with the mouse wheel and arrow keys.
+- Tap the center to switch between a duration ("1 h 30 min") and a time of day ("23:45")
+- Quick picks: 15 min, 30 min, 1 h, 2 h
+- Keeps counting in the notification area when you close the window
+- Windows 11 Fluent design, follows your light/dark mode and accent color
+- Screen-reader friendly: the dial is exposed as a slider
+- Event log at `%AppData%\Dusk\dusk.log`, so "why didn't it shut down last night?" always has an answer
+- Trial mode: `Dusk.exe --deneme` only logs what would happen
 
-## Günlük ve ayarlar
+## Install
 
-- `%AppData%\Dusk\dusk.log`: Başlatma, uyarı, uzatma, iptal (kimin yaptığıyla birlikte), kaçırma ve sonuç olayları. "Dün gece neden kapanmadı?" sorusunun yanıtı buradadır.
-- `%AppData%\Dusk\ayarlar.json`: Son seçilen işlem, süre ve görünüm.
+Download `Dusk.exe` from [Releases](../../releases) and run it. It needs the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0).
 
-## Derleme
-
-.NET 10 SDK gerekir.
+## Build
 
 ```
 dotnet test
 dotnet publish src/Dusk -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o dist
 ```
 
-Çıkan `dist\Dusk.exe`, .NET 10 Masaüstü Çalışma Zamanı kurulu her Windows 10/11'de çalışır.
+## Project layout
 
-## Yapı
+| Path | What |
+|---|---|
+| `src/Dusk.Core` | UI-free logic: the countdown state machine, time texts, settings |
+| `src/Dusk` | The WPF app: dial, warning window, tray icon |
+| `tests/Dusk.Tests` | Unit tests for the core |
+| `tools/make-icon.ps1` | Generates the app icon |
 
-- `src/Dusk.Core`: Arayüzden bağımsız mantık: geri sayım durum makinesi, Türkçe zaman metinleri (doğru ek: "23:45'te", "07:30'da"), ayarlar.
-- `src/Dusk`: WPF arayüzü (Windows 11 Fluent teması, açık/koyu kip sistemi izler), kadran, uyarı penceresi, simge alanı.
-- `tests/Dusk.Tests`: Çekirdek testleri.
-- `tools/make-icon.ps1`: Uygulama simgesini üretir.
+The interface is in Turkish for now.
+
+## License
+
+[MIT](LICENSE)
