@@ -5,8 +5,8 @@ using Dusk.Core;
 namespace Dusk;
 
 /// <summary>
-/// The last-minute heads-up. Enter snoozes, Esc cancels: the safe choices are
-/// the easy ones, and doing it right now is the quiet secondary option.
+/// The last-minute heads-up. Once focused, Enter snoozes and Esc cancels: the
+/// safe choices are the easy ones; doing it right now is the quiet option.
 /// </summary>
 public partial class WarningWindow : Window
 {
@@ -26,7 +26,9 @@ public partial class WarningWindow : Window
         _timer.Changed += OnChanged;
         _timer.Ended += OnEnded;
         Closed += (_, _) => { _timer.Changed -= OnChanged; _timer.Ended -= OnEnded; };
-        Loaded += (_, _) => { SystemSounds.Exclamation.Play(); SnoozeButton.Focus(); };
+        // Never steal the keyboard: someone typing elsewhere must not snooze or
+        // cancel by accident. The window shows on top; keys reach it once clicked.
+        Loaded += (_, _) => SystemSounds.Exclamation.Play();
         OnChanged(this, EventArgs.Empty);
     }
 
@@ -44,6 +46,6 @@ public partial class WarningWindow : Window
     private void OnEnded(object? sender, string? reason) => Close();
 
     private void Snooze_Click(object sender, RoutedEventArgs e) => _timer.Extend(10);
-    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel();
+    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel("uyarı penceresi");
     private void Now_Click(object sender, RoutedEventArgs e) => _timer.RunNow();
 }

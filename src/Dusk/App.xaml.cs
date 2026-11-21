@@ -71,11 +71,10 @@ public partial class App : Application
 
     private void ShowWarning()
     {
-        if (_warning is { IsLoaded: true }) { _warning.Activate(); return; }
+        if (_warning is { IsLoaded: true }) return;
         _warning = new WarningWindow(_timer!);
         _warning.Closed += (_, _) => _warning = null;
-        _warning.Show();
-        _warning.Activate();
+        _warning.Show(); // shown on top, but deliberately not activated
     }
 
     private void Quit()
@@ -85,7 +84,7 @@ public partial class App : Application
             _main.CurrentSettings.Save(Settings.DefaultPath);
             _main.AllowClose = true;
         }
-        _timer?.Cancel();
+        _timer?.Cancel("uygulamadan çıkış");
         _tray?.Dispose();
         _tray = null;
         _main?.Close();

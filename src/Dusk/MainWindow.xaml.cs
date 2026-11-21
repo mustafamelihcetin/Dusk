@@ -133,7 +133,7 @@ public partial class MainWindow : Window
 
     private void Extend_Click(object sender, RoutedEventArgs e) => _timer.Extend(10);
 
-    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel();
+    private void Cancel_Click(object sender, RoutedEventArgs e) => _timer.Cancel("ana pencere");
 
     public void ShowNotice(string? text)
     {

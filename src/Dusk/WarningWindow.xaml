@@ -7,7 +7,7 @@
         Width="400" SizeToContent="Height"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Topmost="True" ShowInTaskbar="True"
+        Topmost="True" ShowInTaskbar="True" ShowActivated="False"
         UseLayoutRounding="True">
     <StackPanel Margin="28,22,28,24">
         <Grid Width="120" Height="120" HorizontalAlignment="Center">

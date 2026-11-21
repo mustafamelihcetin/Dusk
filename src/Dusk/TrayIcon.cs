@@ -21,7 +21,7 @@ public sealed class TrayIcon : IDisposable
         var menu = new Forms.ContextMenuStrip { ShowImageMargin = false };
         _status = new Forms.ToolStripMenuItem { Enabled = false };
         _extend = new Forms.ToolStripMenuItem("10 dakika uzat", null, (_, _) => _timer.Extend(10));
-        _cancel = new Forms.ToolStripMenuItem("Zamanlayıcıyı iptal et", null, (_, _) => _timer.Cancel());
+        _cancel = new Forms.ToolStripMenuItem("Zamanlayıcıyı iptal et", null, (_, _) => _timer.Cancel("tepsi menüsü"));
         menu.Items.AddRange(
         [
             _status,
