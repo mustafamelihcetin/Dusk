@@ -1,9 +1,0 @@
-<Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Sukun.Core/Sukun.Core.csproj" />
-    <Project Path="src/Sukun/Sukun.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/Sukun.Tests/Sukun.Tests.csproj" />
-  </Folder>
-</Solution>

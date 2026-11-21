@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Dusk.Core/Dusk.Core.csproj" />
+    <Project Path="src/Dusk/Dusk.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Dusk.Tests/Dusk.Tests.csproj" />
+  </Folder>
+</Solution>

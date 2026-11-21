@@ -1,6 +1,6 @@
-using Sukun.Core;
+using Dusk.Core;
 
-namespace Sukun.Tests;
+namespace Dusk.Tests;
 
 public class TimeTextTests
 {

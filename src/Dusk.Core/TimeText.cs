@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Sukun.Core;
+namespace Dusk.Core;
 
 public static class TimeText
 {

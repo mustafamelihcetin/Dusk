@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Sukun.Core;
+namespace Dusk.Core;
 
 /// <summary>The few choices worth remembering between launches.</summary>
 public sealed record Settings
@@ -16,7 +16,7 @@ public sealed record Settings
     public const int MaxMinutes = 12 * 60;
 
     public static string DefaultPath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Sukun", "ayarlar.json");
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dusk", "ayarlar.json");
 
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
 

@@ -1,4 +1,4 @@
-namespace Sukun.Core;
+namespace Dusk.Core;
 
 /// <summary>What the countdown wants the UI to do on this tick.</summary>
 public enum CountdownStep
